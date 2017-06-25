@@ -2,7 +2,6 @@ export interface DOMAPI {
   createElement: (tagName: any) => HTMLElement;
   createElementNS: (namespaceURI: string, qualifiedName: string) => Element;
   createTextNode: (text: string) => Text;
-  createComment: (text: string) => Comment;
   insertBefore: (parentNode: Node, newNode: Node, referenceNode: Node | null) => void;
   removeChild: (node: Node, child: Node) => void;
   appendChild: (node: Node, child: Node) => void;
@@ -13,7 +12,6 @@ export interface DOMAPI {
   getTextContent: (node: Node) => string | null;
   isElement: (node: Node) => node is Element;
   isText: (node: Node) => node is Text;
-  isComment: (node: Node) => node is Comment;
 }
 
 function createElement(tagName: any): HTMLElement {
@@ -26,10 +24,6 @@ function createElementNS(namespaceURI: string, qualifiedName: string): Element {
 
 function createTextNode(text: string): Text {
   return document.createTextNode(text);
-}
-
-function createComment(text: string): Comment {
-  return document.createComment(text);
 }
 
 function insertBefore(parentNode: Node, newNode: Node, referenceNode: Node | null): void {
@@ -72,15 +66,10 @@ function isText(node: Node): node is Text {
   return node.nodeType === 3;
 }
 
-function isComment(node: Node): node is Comment {
-  return node.nodeType === 8;
-}
-
 export const htmlDomApi = {
   createElement,
   createElementNS,
   createTextNode,
-  createComment,
   insertBefore,
   removeChild,
   appendChild,
@@ -91,7 +80,6 @@ export const htmlDomApi = {
   getTextContent,
   isElement,
   isText,
-  isComment,
 } as DOMAPI;
 
 export default htmlDomApi;
