@@ -3,18 +3,10 @@ import {Module} from './module';
 
 export type Attrs = Record<string, string | number | boolean>
 
-const booleanAttrs = ["autofocus", "checked", "disabled", "hidden", "readonly",
-                "required", "selected", "spellcheck", "translate"];
-
 const xlinkNS = 'http://www.w3.org/1999/xlink';
 const xmlNS = 'http://www.w3.org/XML/1998/namespace';
 const colonChar = 58;
 const xChar = 120;
-const booleanAttrsDict: {[attribute: string]: boolean} = Object.create(null);
-
-for (let i = 0, len = booleanAttrs.length; i < len; i++) {
-  booleanAttrsDict[booleanAttrs[i]] = true;
-}
 
 function updateAttrs(oldVnode: VNode, vnode: VNode): void {
   var key: string, elm: Element = vnode.elm as Element,
@@ -31,12 +23,10 @@ function updateAttrs(oldVnode: VNode, vnode: VNode): void {
     const cur = attrs[key];
     const old = oldAttrs[key];
     if (old !== cur) {
-      if (booleanAttrsDict[key]) {
-        if (cur) {
-          elm.setAttribute(key, "");
-        } else {
-          elm.removeAttribute(key);
-        }
+      if (cur === true) {
+        elm.setAttribute(key, "");
+      } else if (cur === false) {
+        elm.removeAttribute(key);
       } else {
         // because those in TypeScript are too restrictive: https://github.com/Microsoft/TSJS-lib-generator/pull/237
         type SetAttribute = (name: string, value: string | number | boolean) => void;
