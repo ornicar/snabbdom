@@ -1,15 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var booleanAttrs = ["autofocus", "checked", "disabled", "hidden", "readonly",
-    "required", "selected", "spellcheck", "translate"];
 var xlinkNS = 'http://www.w3.org/1999/xlink';
 var xmlNS = 'http://www.w3.org/XML/1998/namespace';
 var colonChar = 58;
 var xChar = 120;
-var booleanAttrsDict = Object.create(null);
-for (var i = 0, len = booleanAttrs.length; i < len; i++) {
-    booleanAttrsDict[booleanAttrs[i]] = true;
-}
 function updateAttrs(oldVnode, vnode) {
     var key, elm = vnode.elm, oldAttrs = oldVnode.data.attrs, attrs = vnode.data.attrs;
     if (!oldAttrs && !attrs)
@@ -23,13 +17,11 @@ function updateAttrs(oldVnode, vnode) {
         var cur = attrs[key];
         var old = oldAttrs[key];
         if (old !== cur) {
-            if (booleanAttrsDict[key]) {
-                if (cur) {
-                    elm.setAttribute(key, "");
-                }
-                else {
-                    elm.removeAttribute(key);
-                }
+            if (cur === true) {
+                elm.setAttribute(key, "");
+            }
+            else if (cur === false) {
+                elm.removeAttribute(key);
             }
             else {
                 if (key.charCodeAt(0) !== xChar) {

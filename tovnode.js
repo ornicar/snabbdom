@@ -32,7 +32,7 @@ function toVNode(node, domApi) {
         return vnode_1.default(undefined, undefined, undefined, text, node);
     }
     else {
-        return vnode_1.default('', {}, [], undefined, undefined);
+        return vnode_1.default('', {}, [], undefined, node);
     }
 }
 exports.toVNode = toVNode;
