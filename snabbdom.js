@@ -70,7 +70,8 @@ function init(modules, domApi) {
             var hash = hashIdx > 0 ? hashIdx : sel.length;
             var dot = dotIdx > 0 ? dotIdx : sel.length;
             var tag = hashIdx !== -1 || dotIdx !== -1 ? sel.slice(0, Math.min(hash, dot)) : sel;
-            var elm = vnode.elm = api.createElement(tag);
+            var elm = vnode.elm = isDef(data) && isDef(i = data.ns) ? api.createElementNS(i, tag)
+                : api.createElement(tag);
             if (hash < dot)
                 elm.setAttribute('id', sel.slice(hash + 1, dot));
             if (dotIdx > 0)

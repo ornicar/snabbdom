@@ -1,5 +1,6 @@
 export interface DOMAPI {
     createElement: (tagName: any) => HTMLElement;
+    createElementNS: (namespaceURI: string, qualifiedName: string) => Element;
     createTextNode: (text: string) => Text;
     insertBefore: (parentNode: Node, newNode: Node, referenceNode: Node | null) => void;
     removeChild: (node: Node, child: Node) => void;

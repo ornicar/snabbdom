@@ -2,6 +2,17 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 var vnode_1 = require("./vnode");
 var is = require("./is");
+function addNS(data, children, sel) {
+    data.ns = 'http://www.w3.org/2000/svg';
+    if (sel !== 'foreignObject' && children !== undefined) {
+        for (var i = 0; i < children.length; ++i) {
+            var childData = children[i].data;
+            if (childData !== undefined) {
+                addNS(childData, children[i].children, children[i].sel);
+            }
+        }
+    }
+}
 function h(sel, b, c) {
     var data = {}, children, text, i;
     if (c !== undefined) {
@@ -35,6 +46,10 @@ function h(sel, b, c) {
             if (is.primitive(children[i]))
                 children[i] = vnode_1.vnode(undefined, undefined, undefined, children[i]);
         }
+    }
+    if (sel[0] === 's' && sel[1] === 'v' && sel[2] === 'g' &&
+        (sel.length === 3 || sel[3] === '.' || sel[3] === '#')) {
+        addNS(data, children, sel);
     }
     return vnode_1.vnode(sel, data, children, text, undefined);
 }
