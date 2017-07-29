@@ -3,9 +3,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 function createElement(tagName) {
     return document.createElement(tagName);
 }
-function createElementNS(namespaceURI, qualifiedName) {
-    return document.createElementNS(namespaceURI, qualifiedName);
-}
 function createTextNode(text) {
     return document.createTextNode(text);
 }
@@ -41,7 +38,6 @@ function isText(node) {
 }
 exports.htmlDomApi = {
     createElement: createElement,
-    createElementNS: createElementNS,
     createTextNode: createTextNode,
     insertBefore: insertBefore,
     removeChild: removeChild,

@@ -3,11 +3,6 @@ import {Module} from './module';
 
 export type Attrs = Record<string, string | number | boolean>
 
-const xlinkNS = 'http://www.w3.org/1999/xlink';
-const xmlNS = 'http://www.w3.org/XML/1998/namespace';
-const colonChar = 58;
-const xChar = 120;
-
 function updateAttrs(oldVnode: VNode, vnode: VNode): void {
   var key: string, elm: Element = vnode.elm as Element,
       oldAttrs = (oldVnode.data as VNodeData).attrs,
@@ -30,18 +25,7 @@ function updateAttrs(oldVnode: VNode, vnode: VNode): void {
       } else {
         // because those in TypeScript are too restrictive: https://github.com/Microsoft/TSJS-lib-generator/pull/237
         type SetAttribute = (name: string, value: string | number | boolean) => void;
-        type SetAttributeNS = (namespaceURI: string, qualifiedName: string, value: string | number | boolean) => void;
-        if (key.charCodeAt(0) !== xChar) {
-          (elm.setAttribute as SetAttribute)(key, cur);
-        } else if (key.charCodeAt(3) === colonChar) {
-          // Assume xml namespace
-          (elm.setAttributeNS as SetAttributeNS)(xmlNS, key, cur);
-        } else if (key.charCodeAt(5) === colonChar) {
-          // Assume xlink namespace
-          (elm.setAttributeNS as SetAttributeNS)(xlinkNS, key, cur);
-        } else {
-          (elm.setAttribute as SetAttribute)(key, cur);
-        }
+        (elm.setAttribute as SetAttribute)(key, cur);
       }
     }
   }
