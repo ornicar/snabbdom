@@ -1,6 +1,14 @@
 import {VNode, VNodeData} from '../vnode';
 import {Module} from './module';
 
+// because those in TypeScript are too restrictive: https://github.com/Microsoft/TSJS-lib-generator/pull/237
+declare global {
+  interface Element {
+    setAttribute(name: string, value: string | number | boolean): void;
+    setAttributeNS(namespaceURI: string, qualifiedName: string, value: string | number | boolean): void;
+  }
+}
+
 export type Attrs = Record<string, string | number | boolean>
 
 function updateAttrs(oldVnode: VNode, vnode: VNode): void {
@@ -23,9 +31,7 @@ function updateAttrs(oldVnode: VNode, vnode: VNode): void {
       } else if (cur === false) {
         elm.removeAttribute(key);
       } else {
-        // because those in TypeScript are too restrictive: https://github.com/Microsoft/TSJS-lib-generator/pull/237
-        type SetAttribute = (name: string, value: string | number | boolean) => void;
-        (elm.setAttribute as SetAttribute)(key, cur);
+          elm.setAttribute(key, cur);
       }
     }
   }

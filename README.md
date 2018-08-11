@@ -153,6 +153,31 @@ var vnode = h('div', {style: {color: '#000'}}, [
 ]);
 ```
 
+### `snabbdom/tovnode`
+
+Converts a DOM node into a virtual node. Especially good for patching over an pre-existing, 
+server-side generated content.
+
+```javascript
+var snabbdom = require('snabbdom')
+var patch = snabbdom.init([ // Init patch function with chosen modules
+  require('snabbdom/modules/class').default, // makes it easy to toggle classes
+  require('snabbdom/modules/props').default, // for setting properties on DOM elements
+  require('snabbdom/modules/style').default, // handles styling on elements with support for animations
+  require('snabbdom/modules/eventlisteners').default, // attaches event listeners
+]);
+var h = require('snabbdom/h').default; // helper function for creating vnodes
+var toVNode = require('snabbdom/tovnode').default;
+
+var newVNode = h('div', {style: {color: '#000'}}, [
+  h('h1', 'Headline'),
+  h('p', 'A paragraph'),
+]);
+
+patch(toVNode(document.querySelector('.container')), newVNode)
+
+```
+
 ### Hooks
 
 Hooks are a way to hook into the lifecycle of DOM nodes. Snabbdom
@@ -489,22 +514,28 @@ var vnode = h('div', [
 
 See also the [SVG example](./examples/svg) and the [SVG Carousel example](./examples/carousel-svg/).
 
-#### Using Classes
-Due to a bug in certain browsers like IE 11 and below and UC Browser, SVG Objects in these browsers do not support classlist property. Hence, the classes module (which uses classlist property internally) will not work for these browsers.
+#### Using Classes in SVG Elements
 
-Also, using snabbdom/h to create an element by passing a className along with the element type will not work as className property is read-only for SVG elements.
+Certain browsers (like IE <=11) [do not support `classList` property in SVG elements](http://caniuse.com/#feat=classlist).
+Hence, the _class_ module (which uses `classList` property internally) will not work for these browsers.
 
-You can add classes to SVG elements for both of these cases by using the attributes module as shown below:-
-```javascript
-h('text', {
-    attrs: {
-      x: xPos,
-      y: yPos,
-      dy: "5",
-      class: 'text_class'
-    }},
-  text
-);
+The classes in selectors for SVG elements work fine from version 0.6.7.
+
+You can add dynamic classes to SVG elements for these cases by using the _attributes_ module and an Array as shown below:
+
+```js
+h('svg', [
+  h('text.underline', { // 'underline' is a selector class, remain unchanged between renders.
+      attrs: {
+        // 'active' and 'red' are dynamic classes, they can change between renders
+        // so we need to put them in the class attribute.
+        // (Normally we'd use the classModule, but it doesn't work inside SVG)
+        class: [isActive && "active", isColored && "red"].filter(Boolean).join(" ")
+      }
+    },
+    'Hello World'
+  )
+])
 ```
 
 ### Thunks
@@ -667,9 +698,12 @@ Here are some approaches to building applications with Snabbdom.
   "A reactive frontend framework for JavaScript"
   uses Snabbdom
 * [Tung](https://github.com/Reon90/tung) –
-  A javascript library for rendering html. Tung helps to divide html and javascript development.
+  A JavaScript library for rendering html. Tung helps to divide html and JavaScript development.
 * [sprotty](https://github.com/theia-ide/sprotty) - "A web-based diagramming framework" uses Snabbdom.
+* [Mark Text](https://github.com/marktext/marktext) - "Realtime preview Markdown Editor" build on Snabbdom.
+* [puddles](https://github.com/flintinatux/puddles) - 
+  "Tiny vdom app framework. Pure Redux. No boilerplate." - Built with :heart: on Snabbdom.
+* [Backbone.VDOMView](https://github.com/jcbrand/backbone.vdomview) - A [Backbone](http://backbonejs.org/) View with VirtualDOM capability via Snabbdom.
 
 Be sure to share it if you're building an application in another way
 using Snabbdom.
-

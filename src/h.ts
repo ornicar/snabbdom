@@ -1,25 +1,25 @@
 import {vnode, VNode, VNodeData} from './vnode';
+export type VNodes = Array<VNode>;
+export type VNodeChildElement = VNode | string | number | undefined | null;
+export type ArrayOrElement<T> = T | T[];
+export type VNodeChildren = ArrayOrElement<VNodeChildElement>
 import * as is from './is';
 
-function addNS(data: any, children: Array<VNode> | undefined, sel: string | undefined): void {
+function addNS(data: any, children: VNodes | undefined, sel: string | undefined): void {
   data.ns = 'http://www.w3.org/2000/svg';
   if (sel !== 'foreignObject' && children !== undefined) {
     for (let i = 0; i < children.length; ++i) {
       let childData = children[i].data;
       if (childData !== undefined) {
-        addNS(childData, (children[i] as VNode).children as Array<VNode>, children[i].sel);
+        addNS(childData, (children[i] as VNode).children as VNodes, children[i].sel);
       }
     }
   }
 }
 
-export type VNodeChildren = Array<VNode | string | undefined | null>;
-
 export function h(sel: string): VNode;
 export function h(sel: string, data: VNodeData): VNode;
-export function h(sel: string, text: string): VNode;
 export function h(sel: string, children: VNodeChildren): VNode;
-export function h(sel: string, data: VNodeData, text: string): VNode;
 export function h(sel: string, data: VNodeData, children: VNodeChildren): VNode;
 export function h(sel: any, b?: any, c?: any): VNode {
   var data: VNodeData = {}, children: any, text: any, i: number;
@@ -34,9 +34,9 @@ export function h(sel: any, b?: any, c?: any): VNode {
     else if (b && b.sel) { children = [b]; }
     else { data = b; }
   }
-  if (is.array(children)) {
+  if (children !== undefined) {
     for (i = 0; i < children.length; ++i) {
-      if (is.primitive(children[i])) children[i] = (vnode as any)(undefined, undefined, undefined, children[i]);
+      if (is.primitive(children[i])) children[i] = vnode(undefined, undefined, undefined, children[i], undefined);
     }
   }
   if (
